@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace EliteDining.DAL.Models;
 
-public partial class FoodT
+public partial class Food
 {
     public int FoodId { get; set; }
 
@@ -11,5 +11,7 @@ public partial class FoodT
 
     public int? Price { get; set; }
 
-    public int ChefId { get; set; }
+    public int EmployeeId { get; set; }
+
+    public virtual Employee Employee { get; set; } = null!;
 }
