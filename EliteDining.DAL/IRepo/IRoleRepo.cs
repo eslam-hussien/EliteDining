@@ -6,9 +6,9 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EliteDining.DAL.Repo
+namespace EliteDining.DAL.IRepo
 {
-    public interface IRole
+    public interface IRoleRepo
     {
         Task<IResponseDataModel<IEnumerable<Role>>> GetAllRoles();
         Task<IResponseDataModel<Role>> GetRole(Expression<Func<Role, bool>>? filter);
