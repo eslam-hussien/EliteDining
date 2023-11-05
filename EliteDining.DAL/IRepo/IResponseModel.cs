@@ -1,4 +1,4 @@
-﻿namespace EliteDining.DAL.Repo
+﻿namespace EliteDining.DAL.IRepo
 {
     public interface IResponseModel
     {

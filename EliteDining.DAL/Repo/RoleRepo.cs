@@ -1,9 +1,9 @@
-﻿using EliteDining.DAL.Repo;
+﻿using EliteDining.DAL.IRepo;
 using System.Linq.Expressions;
 
-namespace EliteDining.BL.Services
-{
-    public class Role : IRole
+namespace EliteDining.DAL.Repo
+{ 
+    public class RoleRepo : IRoleRepo
     {
         public Task<IResponseModel> AddRole(DAL.Models.Role Role)
         {
