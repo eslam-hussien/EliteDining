@@ -1,9 +1,6 @@
 ﻿using EliteDining.BL.IServices;
 using EliteDining.DAL.IRepo;
 using EliteDining.DAL.Models;
-using EliteDining.DAL.Repo;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace EliteDining.BL.Services
 {

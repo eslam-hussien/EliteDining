@@ -1,31 +1,36 @@
 ﻿using EliteDining.DAL.IRepo;
+using EliteDining.DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace EliteDining.DAL.Repo
-{ 
+{
     public class RoleRepo : IRoleRepo
     {
-        public Task<IResponseModel> AddRole(DAL.Models.Role Role)
+        private readonly EliteDiningDbContext _context;
+        public RoleRepo(EliteDiningDbContext context) =>
+            _context = context;
+        public Task<int> AddRole(Role role)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IResponseModel> DeleteRole(int id)
+        public Task<int> DeleteRole(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IResponseDataModel<IEnumerable<DAL.Models.Role>>> GetAllRoles()
+        public Task<IEnumerable<Role>> GetAllRoles()
         {
             throw new NotImplementedException();
         }
 
-        public Task<IResponseDataModel<DAL.Models.Role>> GetRole(Expression<Func<DAL.Models.Role, bool>>? filter)
+        public Task<Role> GetRole(Expression<Func<Role, bool>> filter)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IResponseModel> UpdateRole(DAL.Models.Role Role)
+        public Task<int> UpdateRole(Role role)
         {
             throw new NotImplementedException();
         }
