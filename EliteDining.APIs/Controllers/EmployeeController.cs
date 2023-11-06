@@ -22,13 +22,36 @@ namespace EliteDining.APIs.Controllers
             _mapper = mapper;
         }
 
-        //[HttpGet]
-        //public ActionResult<IEnumerable<EmployeeViewModel>> Get()
-        //{
-        //    var emps = _emp.GetAllEmployees;
-        //    var ViewModels = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(emps);
-        //    return Ok(ViewModels);
-        //}
+        [HttpGet]
+        public async Task<IResult> GetAll()
+        {
+            try
+            {
+                var employees = await _employeeService.GetAllAsync();
+                if (employees != null)
+                {
+                    return TypedResults.Ok(new ResponseDataModel<IEnumerable <EmployeeViewModel>>
+                    {
+                        Success = true,
+                        Data = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(employees)
+
+                    }); 
+                }
+                return TypedResults.BadRequest(new ResponseDataModel<EmployeeViewModel>
+                {
+                    Success = false,
+                    Message = "There is no result"
+                });
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.BadRequest(new ResponseDataModel<EmployeeViewModel>
+                {
+                    Success = false,
+                    Message = ex.Message,
+                });
+            }
+        }
 
         [HttpGet("{id}")]
         public async Task<IResult> GetEmployee(int id)
@@ -38,14 +61,14 @@ namespace EliteDining.APIs.Controllers
                 var employee = await _employeeService.GetByIdAsync(id);
                 if (employee != null)
                 {
-                    return TypedResults.Ok(new ResponseDataModel<EmployeeVewModel>
+                    return TypedResults.Ok(new ResponseDataModel<EmployeeViewModel>
                     {
                         Success = true,
-                        Data = _mapper.Map<Employee, EmployeeVewModel>(employee)
+                        Data = _mapper.Map<Employee, EmployeeViewModel>(employee)
 
                     });
                 }
-                return TypedResults.BadRequest(new ResponseDataModel<EmployeeVewModel>
+                return TypedResults.BadRequest(new ResponseDataModel<EmployeeViewModel>
                 {
                     Success = false,
                     Message = "There is no result"
@@ -53,7 +76,7 @@ namespace EliteDining.APIs.Controllers
             }
             catch (Exception ex)
             {
-                return TypedResults.BadRequest(new ResponseDataModel<EmployeeVewModel>
+                return TypedResults.BadRequest(new ResponseDataModel<EmployeeViewModel>
                 {
                     Success = false,
                     Message = ex.Message,
@@ -62,9 +85,9 @@ namespace EliteDining.APIs.Controllers
         }
 
         [HttpPost]
-        public async Task<IResult> Create(EmployeeVewModel employeeVewModel)
+        public async Task<IResult> Create(EmployeeViewModel employeeVewModel)
         {
-            var employee = _mapper.Map<EmployeeVewModel, Employee>(employeeVewModel);
+            var employee = _mapper.Map<EmployeeViewModel, Employee>(employeeVewModel);
             try
             {
                 var isSaved = await _employeeService.AddAsync(employee);
@@ -92,38 +115,60 @@ namespace EliteDining.APIs.Controllers
             }
         }
 
-        //[HttpPut("{id}")]
-        //public IActionResult Update(int id, ProductViewModel productViewModel)
-        //{
-        //    if (id != productViewModel.Id)
-        //    {
-        //        return BadRequest();
-        //    }
+        [HttpPut("{id}")]
+        public  IActionResult Update(int id, EmployeeViewModel employeeViewModel)
+        {
+            if (id != employeeViewModel.EmployeeId)
+            {
+                return BadRequest();
+            }
 
-        //    var existingProduct = _productService.GetProductById(id);
-        //    if (existingProduct == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var existingEmployee = _employeeService.GetByIdAsync(id);
+            if (existingEmployee == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var employee = _mapper.Map<EmployeeViewModel, Employee>(employeeViewModel);
+                _employeeService.UpdateAsync(employee);
+            }
 
-        //    var product = _mapper.Map<ProductViewModel, Product>(productViewModel);
-        //    _productService.UpdateProduct(product);
+           return NoContent();
 
-        //    return NoContent();
-        //}
+        }
 
-        //[HttpDelete("{id}")]
-        //public IActionResult Delete(int id)
-        //{
-        //    var existingProduct = _productService.GetProductById(id);
-        //    if (existingProduct == null)
-        //    {
-        //        return NotFound();
-        //    }
+        [HttpDelete("{id}")]
+        public async Task<IResult> Delete(int id)
+        {
+            try
+            {
+                var employee = await _employeeService.GetByIdAsync(id);
+                if (employee != null)
+                {
+                   await _employeeService.DeleteAsync(id);
+                    return TypedResults.Ok(new ResponseDataModel<EmployeeViewModel>
+                    {
+                        Success = true,
+                    });
+                }
+                return TypedResults.NotFound(new ResponseDataModel<EmployeeViewModel>
+                {
+                    Success = false,
+                    Message = "There is no result"
+                });
+            }
+            catch (Exception ex)
+            {
+                return TypedResults.BadRequest(new ResponseDataModel<EmployeeViewModel>
+                {
+                    Success = false,
+                    Message = ex.Message,
+                });
+            }
 
-        //    _productService.DeleteProduct(id);
 
-        //    return NoContent();
-        //}
+
+        }
     }
 }

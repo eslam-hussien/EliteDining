@@ -13,9 +13,9 @@ public partial class Order
 
     public int FoodId { get; set; }
 
-    public virtual Customer Cust { get; set; } = null!;
+    public virtual Customer Cust { get; set; } 
 
-    public virtual Employee Employee { get; set; } = null!;
+    public virtual Employee Employee { get; set; }
 
-    public virtual Food Food { get; set; } = null!;
+    public virtual Food Food { get; set; } 
 }

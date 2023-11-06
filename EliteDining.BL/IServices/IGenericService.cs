@@ -1,13 +1,11 @@
-﻿using EliteDining.DAL.IRepo;
-
-namespace EliteDining.BL.IServices
+﻿namespace EliteDining.BL.IServices
 {
     public interface IGenericService<T> where T : class
     {
         Task<T> GetByIdAsync(int id);
-        Task<List<T>> GetAllAsync();
+        Task<IEnumerable<T>> GetAllAsync();
         Task<int> AddAsync(T entity);
         Task<int> UpdateAsync(T entity);
-        Task<int> DeleteAsync(T entity);
+        Task<int> DeleteAsync(int id);
     }
 }

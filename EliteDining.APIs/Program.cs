@@ -23,7 +23,6 @@ namespace EliteDining.APIs
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddPersistenceLayer(builder.Configuration);
-            builder.Services.AddScoped<IGenericService<Employee>, EmployeeService>();
             builder.Services.AddAutoMapper(typeof(Program));
 
 
@@ -51,7 +50,7 @@ namespace EliteDining.APIs
     {
         public AutoMapper()
         {
-            CreateMap<Employee, EmployeeVewModel>().ReverseMap();
+            CreateMap<Employee, EmployeeViewModel>().ReverseMap();
         }
     }
 }
