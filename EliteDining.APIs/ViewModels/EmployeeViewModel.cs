@@ -1,6 +1,6 @@
 ﻿namespace EliteDining.APIs.ViewModel
 {
-    public class EmployeeVewModel
+    public class EmployeeViewModel
     {
         public int EmployeeId { get; set; }
 

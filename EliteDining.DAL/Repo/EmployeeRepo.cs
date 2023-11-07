@@ -4,39 +4,45 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 namespace EliteDining.DAL.Repo
 {
-    public class EmployeeRepo : IEmployeeRepo
+    public class EmployeeRepo : IGenericRepo<Employee>
     {
         private readonly EliteDiningDbContext _context;
 
         public EmployeeRepo(EliteDiningDbContext context) =>
             _context = context;
 
-        public async Task<int> AddEmployee(Employee employee)
+        public async Task<int> Add(Employee entity)
         {
-            _context.Employees.Add(employee);
+            _context.Employees.Add(entity);
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<int> DeleteEmployee(int id)
+        public async Task<int> Delete(int id)
         {
-            var deletedEmployee = await GetEmployee(x => x.EmployeeId == id);
-            _context.Employees.Remove(deletedEmployee);
+            var deletedOne = await GetOne(x => x.EmployeeId == id);
+            _context.Employees.Remove(deletedOne);
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Employee>> GetAllEmployees() =>
+        public async Task<IEnumerable<Employee>> GetAll() =>
               await _context.Employees.ToListAsync();
 
 
-        public async Task<Employee> GetEmployee(Expression<Func<Employee, bool>> filter) =>
+        public async Task<Employee> GetOne(Expression<Func<Employee, bool>> filter) =>
               await _context.Employees.FirstOrDefaultAsync(filter);
 
-        public async Task<int> UpdateEmployee(Employee employee)
+        public async Task<int> Update(Employee employee)
         {
-            employee.HourlyPay = employee.HourlyPay;
-            employee.DateHired = employee.DateHired;
-            employee.EName = employee.EName;
-            employee.RoleId = employee.RoleId;
+            //var existingEmployee = await _context.Employees.FirstOrDefaultAsync(x => x.EmployeeId == employee.EmployeeId);
+            //existingEmployee.HourlyPay = employee.HourlyPay;
+            //existingEmployee.DateHired = employee.DateHired;
+            //existingEmployee.EName = employee.EName;
+            //existingEmployee.RoleId = employee.RoleId;
+            //_context.Employees.Update(existingEmployee);
+
+
+            var existing_employee = _context.Employees.Find(employee.EmployeeId);
+            _context.Entry(existing_employee).CurrentValues.SetValues(employee);
             return await _context.SaveChangesAsync();
         }
     }

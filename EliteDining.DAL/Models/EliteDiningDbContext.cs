@@ -171,7 +171,7 @@ public partial class EliteDiningDbContext : DbContext
 
             entity.Property(e => e.RoleId).HasColumnName("RoleID");
             entity.Property(e => e.IsChef).HasColumnName("isChef");
-            entity.Property(e => e.Role1)
+            entity.Property(e => e.RoleName)
                 .HasMaxLength(50)
                 .HasColumnName("Role");
         });

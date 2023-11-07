@@ -1,9 +1,9 @@
-﻿using EliteDining.DAL.IRepo;
+﻿using EliteDining.BL.IServices;
+using EliteDining.BL.Services;
+using EliteDining.DAL.IRepo;
 using EliteDining.DAL.Models;
 using EliteDining.DAL.Repo;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace EliteDining.DAL.Extensions
 {
@@ -13,6 +13,7 @@ namespace EliteDining.DAL.Extensions
         {
             services.AddDbContext(configuration);
             services.AddRepositories();
+            services.AddServices();
         }
 
 
@@ -28,7 +29,11 @@ namespace EliteDining.DAL.Extensions
 
         private static void AddRepositories(this IServiceCollection services)
         {
-            services.AddScoped<IEmployeeRepo, EmployeeRepo>();
+            services.AddScoped<IGenericRepo<Employee>, EmployeeRepo>();
+        }
+        private static void AddServices(this IServiceCollection services)
+        {
+            services.AddScoped<IGenericService<Employee>, EmployeeService>();
         }
     }
 }
