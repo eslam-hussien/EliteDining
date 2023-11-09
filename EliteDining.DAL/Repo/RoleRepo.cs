@@ -5,34 +5,39 @@ using System.Linq.Expressions;
 
 namespace EliteDining.DAL.Repo
 {
-    public class RoleRepo : IRoleRepo
+    public class RoleRepo : IGenericRepo<Role>
     {
         private readonly EliteDiningDbContext _context;
         public RoleRepo(EliteDiningDbContext context) =>
             _context = context;
-        public Task<int> AddRole(Role role)
+
+        public async Task<int> Add(Role entity)
         {
-            throw new NotImplementedException();
+            _context.Roles.Add(entity);
+            return await _context.SaveChangesAsync();
         }
 
-        public Task<int> DeleteRole(int id)
+        public async Task<int> Delete(int id)
         {
-            throw new NotImplementedException();
+            var deletedOne = await GetOne(x => x.RoleId == id);
+            _context.Roles.Remove(deletedOne);
+            return await _context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<Role>> GetAllRoles()
-        {
-            throw new NotImplementedException();
-        }
+        public async Task<IEnumerable<Role>> GetAll() =>
+              await _context.Roles.ToListAsync();
 
-        public Task<Role> GetRole(Expression<Func<Role, bool>> filter)
-        {
-            throw new NotImplementedException();
-        }
+        public  async Task<Role> GetOne(Expression<Func<Role, bool>> filter) =>        
+            await _context.Roles.FirstOrDefaultAsync(filter);
 
-        public Task<int> UpdateRole(Role role)
+
+        public async Task<int> Update(Role role)
         {
-            throw new NotImplementedException();
+            role.RoleName = role.RoleName;
+            role.IsChef = role.IsChef;
+            role.IsAdmin = role.IsAdmin;
+            role.IsWaiter = role.IsWaiter;
+            return await _context.SaveChangesAsync();
         }
     }
 }

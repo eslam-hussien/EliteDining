@@ -6,6 +6,7 @@ using EliteDining.DAL.Extensions;
 using AutoMapper;
 using Microsoft.Extensions.Logging;
 using EliteDining.APIs.ViewModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace EliteDining.APIs
 {
@@ -17,13 +18,16 @@ namespace EliteDining.APIs
 
             // Add services to the container.
 
+            string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services.AddDbContext<EliteDiningDbContext>(options =>
+                options.UseSqlServer(connectionString));
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddPersistenceLayer(builder.Configuration);
-            builder.Services.AddScoped<IGenericService<Employee>, EmployeeService>();
             builder.Services.AddAutoMapper(typeof(Program));
 
 
@@ -51,7 +55,7 @@ namespace EliteDining.APIs
     {
         public AutoMapper()
         {
-            CreateMap<Employee, EmployeeVewModel>().ReverseMap();
+            CreateMap<Employee, EmployeeViewModel>().ReverseMap();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using EliteDining.BL.IServices;
+using EliteDining.DAL.IRepo;
 using EliteDining.DAL.Models;
 using EliteDining.DAL.Repo;
 using System.Linq.Expressions;
@@ -7,17 +8,18 @@ namespace EliteDining.BL.Services
 {
     public class RoleService : IGenericService<Role>
     {
-        public Task<int> AddAsync(Role entity)
+        private readonly IGenericRepo<Role> _roleRepo;
+        public RoleService(IGenericRepo<Role> roleRepo) =>
+            _roleRepo = roleRepo;
+        public Task<int> AddAsync(Role entity)=>
+            _roleRepo.Add(entity);
+
+        public Task<int> DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<int> DeleteAsync(Role entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Role>> GetAllAsync()
+        public Task<IEnumerable<Role>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
