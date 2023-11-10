@@ -7,13 +7,13 @@ public partial class Role
 {
     public int RoleId { get; set; }
 
-    public string RoleName { get; set; } 
+    public string RoleName { get; set; }
 
-    public bool IsAdmin { get; set; }
+    public bool? IsAdmin { get; set; }
 
-    public bool IsWaiter { get; set; }
+    public bool? IsWaiter { get; set; }
 
-    public bool IsChef { get; set; }
+    public bool? IsChef { get; set; }
 
     public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
 }

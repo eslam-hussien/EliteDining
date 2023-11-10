@@ -15,8 +15,8 @@ namespace EliteDining.BL.Services
         public  Task<int> AddAsync(Employee entity) =>
              _employeeRepo.Add(entity);
 
-        public Task<int> DeleteAsync(int deletedEmployee) =>
-             _employeeRepo.Delete(deletedEmployee);
+        public Task<int> DeleteAsync(int id) =>
+             _employeeRepo.Delete(id);
         
 
         public Task<IEnumerable<Employee>> GetAllAsync() =>
