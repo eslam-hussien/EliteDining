@@ -29,11 +29,25 @@ namespace EliteDining.DAL.Extensions
 
         private static void AddRepositories(this IServiceCollection services)
         {
+            services.AddScoped<IGenericRepo<Bill>, BillRepo>();
+            services.AddScoped<IGenericRepo<Customer>, CustomerRepo>();
             services.AddScoped<IGenericRepo<Employee>, EmployeeRepo>();
+            services.AddScoped<IGenericRepo<Food>, FoodRepo>();
+            services.AddScoped<IGenericRepo<Order>, OrderRepo>();
+            services.AddScoped<IGenericRepo<Payment>, PaymentRepo>();
+            services.AddScoped<IGenericRepo<Role>, RoleRepo>();
+            services.AddScoped<IGenericRepo<Table>, TableRepo>();
         }
         private static void AddServices(this IServiceCollection services)
         {
+            services.AddScoped<IGenericService<Bill>, BillService>();
+            services.AddScoped<IGenericService<Customer>, CustomerService>();
             services.AddScoped<IGenericService<Employee>, EmployeeService>();
+            services.AddScoped<IGenericService<Food>, FoodService>();
+            services.AddScoped<IGenericService<Order>, OrderService>();
+            services.AddScoped<IGenericService<Payment>, PaymentService>();
+            services.AddScoped<IGenericService<Role>, RoleService>();
+            services.AddScoped<IGenericService<Table>, TableService>();
         }
     }
 }

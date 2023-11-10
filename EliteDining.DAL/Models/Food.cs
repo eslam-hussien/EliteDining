@@ -9,9 +9,11 @@ public partial class Food
 
     public string Name { get; set; }
 
-    public int Price { get; set; }
+    public int? Price { get; set; }
 
     public int EmployeeId { get; set; }
 
-    public virtual Employee Employee { get; set; } 
+    public virtual Employee Employee { get; set; }
+
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

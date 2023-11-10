@@ -7,7 +7,7 @@ public partial class Employee
 {
     public int EmployeeId { get; set; }
 
-    public string EName { get; set; } 
+    public string EName { get; set; }
 
     public DateTime? DateHired { get; set; }
 
@@ -16,6 +16,8 @@ public partial class Employee
     public int? RoleId { get; set; }
 
     public virtual ICollection<Food> Foods { get; set; } = new List<Food>();
+
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
     public virtual Role Role { get; set; }
 
