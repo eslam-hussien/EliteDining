@@ -1,11 +1,7 @@
-
-using EliteDining.BL.IServices;
-using EliteDining.BL.Services;
-using EliteDining.DAL.Models;
-using EliteDining.DAL.Extensions;
 using AutoMapper;
-using Microsoft.Extensions.Logging;
 using EliteDining.APIs.ViewModel;
+using EliteDining.DAL.Extensions;
+using EliteDining.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EliteDining.APIs
@@ -55,7 +51,14 @@ namespace EliteDining.APIs
     {
         public AutoMapper()
         {
+            CreateMap<Bill, BillViewModel>().ReverseMap();
+            CreateMap<Customer, CustomerViewModel>().ReverseMap();
             CreateMap<Employee, EmployeeViewModel>().ReverseMap();
+            CreateMap<Food, FoodViewModel>().ReverseMap();
+            CreateMap<Order, OrderViewModel>().ReverseMap();
+            CreateMap<Payment, PaymentViewModel>().ReverseMap();
+            CreateMap<Role, RoleViewModel>().ReverseMap();
+            CreateMap<Table, TableViewModel>().ReverseMap();
         }
     }
 }

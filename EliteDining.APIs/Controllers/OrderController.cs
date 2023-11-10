@@ -9,16 +9,16 @@ namespace EliteDining.APIs.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EmployeeController : ControllerBase
+    public class OrderController : ControllerBase
     {
 
 
-        private readonly IGenericService<Employee> _employeeService;
+        private readonly IGenericService<Order> _OrderService;
         private readonly IMapper _mapper;
 
-        public EmployeeController(IGenericService<Employee> employeeService, IMapper mapper)
+        public OrderController(IGenericService<Order> OrderService, IMapper mapper)
         {
-            _employeeService = employeeService;
+            _OrderService = OrderService;
             _mapper = mapper;
         }
 
@@ -27,17 +27,17 @@ namespace EliteDining.APIs.Controllers
         {
             try
             {
-                var employees = await _employeeService.GetAllAsync();
-                if (employees != null)
+                var Orders = await _OrderService.GetAllAsync();
+                if (Orders != null)
                 {
-                    return TypedResults.Ok(new ResponseDataModel<IEnumerable<EmployeeViewModel>>
+                    return TypedResults.Ok(new ResponseDataModel<IEnumerable<OrderViewModel>>
                     {
                         Success = true,
-                        Data = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(employees)
+                        Data = _mapper.Map<IEnumerable<Order>, IEnumerable<OrderViewModel>>(Orders)
 
                     });
                 }
-                return TypedResults.BadRequest(new ResponseDataModel<EmployeeViewModel>
+                return TypedResults.BadRequest(new ResponseDataModel<OrderViewModel>
                 {
                     Success = false,
                     Message = "There is no result"
@@ -45,7 +45,7 @@ namespace EliteDining.APIs.Controllers
             }
             catch (Exception ex)
             {
-                return TypedResults.BadRequest(new ResponseDataModel<EmployeeViewModel>
+                return TypedResults.BadRequest(new ResponseDataModel<OrderViewModel>
                 {
                     Success = false,
                     Message = ex.Message,
@@ -54,21 +54,21 @@ namespace EliteDining.APIs.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IResult> GetEmployee(int id)
+        public async Task<IResult> GetOrder(int id)
         {
             try
             {
-                var employee = await _employeeService.GetByIdAsync(id);
-                if (employee != null)
+                var Order = await _OrderService.GetByIdAsync(id);
+                if (Order != null)
                 {
-                    return TypedResults.Ok(new ResponseDataModel<EmployeeViewModel>
+                    return TypedResults.Ok(new ResponseDataModel<OrderViewModel>
                     {
                         Success = true,
-                        Data = _mapper.Map<Employee, EmployeeViewModel>(employee)
+                        Data = _mapper.Map<Order, OrderViewModel>(Order)
 
                     });
                 }
-                return TypedResults.BadRequest(new ResponseDataModel<EmployeeViewModel>
+                return TypedResults.BadRequest(new ResponseDataModel<OrderViewModel>
                 {
                     Success = false,
                     Message = "There is no result"
@@ -76,7 +76,7 @@ namespace EliteDining.APIs.Controllers
             }
             catch (Exception ex)
             {
-                return TypedResults.BadRequest(new ResponseDataModel<EmployeeViewModel>
+                return TypedResults.BadRequest(new ResponseDataModel<OrderViewModel>
                 {
                     Success = false,
                     Message = ex.Message,
@@ -85,12 +85,12 @@ namespace EliteDining.APIs.Controllers
         }
 
         [HttpPost]
-        public async Task<IResult> Create(EmployeeViewModel employeeViewModel)
+        public async Task<IResult> Create(OrderViewModel orderViewModel)
         {
-            var employee = _mapper.Map<EmployeeViewModel, Employee>(employeeViewModel);
+            var Order = _mapper.Map<OrderViewModel, Order>(orderViewModel);
             try
             {
-                var isSaved = await _employeeService.AddAsync(employee);
+                var isSaved = await _OrderService.AddAsync(Order);
                 if (isSaved == 1)
                 {
                     return TypedResults.Ok(new ResponseModel
@@ -116,18 +116,18 @@ namespace EliteDining.APIs.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IResult> Update(int id, EmployeeViewModel employeeViewModel)
+        public async Task<IResult> Update(int id, OrderViewModel orderViewModel)
         {
-            var employee = _mapper.Map<EmployeeViewModel, Employee>(employeeViewModel);
+            var Order = _mapper.Map<OrderViewModel, Order>(orderViewModel);
 
 
-            if (id == employeeViewModel.EmployeeId)
+            if (id == orderViewModel.OrderId)
             {
 
-                var existingEmployee = await _employeeService.GetByIdAsync(id);
-                if (existingEmployee != null)
+                var existingOrder = await _OrderService.GetByIdAsync(id);
+                if (existingOrder != null)
                 {
-                    await _employeeService.UpdateAsync(employee);
+                    await _OrderService.UpdateAsync(Order);
                     return TypedResults.Ok(new ResponseModel
                     {
                         Success = true,
@@ -147,7 +147,7 @@ namespace EliteDining.APIs.Controllers
                 return TypedResults.BadRequest(new ResponseModel
                 {
                     Success = false,
-                    Message = "The employee ID in the URL does not match the employee ID in the body"
+                    Message = "The Order ID in the URL does not match the Order ID in the body"
                 });
             }
         }
@@ -157,16 +157,16 @@ namespace EliteDining.APIs.Controllers
         {
             try
             {
-                var employee = await _employeeService.GetByIdAsync(id);
-                if (employee != null)
+                var Order = await _OrderService.GetByIdAsync(id);
+                if (Order != null)
                 {
-                    await _employeeService.DeleteAsync(id);
-                    return TypedResults.Ok(new ResponseDataModel<EmployeeViewModel>
+                    await _OrderService.DeleteAsync(id);
+                    return TypedResults.Ok(new ResponseDataModel<OrderViewModel>
                     {
                         Success = true,
                     });
                 }
-                return TypedResults.NotFound(new ResponseDataModel<EmployeeViewModel>
+                return TypedResults.NotFound(new ResponseDataModel<OrderViewModel>
                 {
                     Success = false,
                     Message = "There is no result"
@@ -174,7 +174,7 @@ namespace EliteDining.APIs.Controllers
             }
             catch (Exception ex)
             {
-                return TypedResults.BadRequest(new ResponseDataModel<EmployeeViewModel>
+                return TypedResults.BadRequest(new ResponseDataModel<OrderViewModel>
                 {
                     Success = false,
                     Message = ex.Message,

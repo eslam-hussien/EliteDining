@@ -7,15 +7,17 @@ public partial class Customer
 {
     public int CustId { get; set; }
 
-    public string CName { get; set; }
+    public string? CName { get; set; }
 
-    public string Phone { get; set; }
+    public string? Phone { get; set; }
 
     public int TableNo { get; set; }
 
     public virtual ICollection<Bill> Bills { get; set; } = new List<Bill>();
 
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
-    public virtual Table TableNoNavigation { get; set; } = null!;
+    public virtual Table? TableNoNavigation { get; set; }
 }

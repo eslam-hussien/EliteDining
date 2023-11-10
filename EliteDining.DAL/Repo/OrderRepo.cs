@@ -19,8 +19,8 @@ namespace EliteDining.DAL.Repo
 
         public async Task<int> Delete(int id)
         {
-            /*var deletedOne = await GetOne(x => x.OrderNo == id);
-            _context.Orders.Remove(deletedOne);*/
+            var deletedOne = await GetOne(x => x.OrderId == id);
+            _context.Orders.Remove(deletedOne);
             return await _context.SaveChangesAsync();
         }
 
@@ -33,8 +33,8 @@ namespace EliteDining.DAL.Repo
 
         public async Task<int> Update(Order Order)
         {
-           /* var existing_Order = _context.Orders.Find(Order.OrderNo);
-            _context.Entry(existing_Order).CurrentValues.SetValues(Order);*/
+            var existing_Order = _context.Orders.Find(Order.OrderId);
+            _context.Entry(existing_Order).CurrentValues.SetValues(Order);
             return await _context.SaveChangesAsync();
         }
     }

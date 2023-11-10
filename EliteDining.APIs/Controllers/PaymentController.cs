@@ -9,16 +9,16 @@ namespace EliteDining.APIs.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EmployeeController : ControllerBase
+    public class PaymentController : ControllerBase
     {
 
 
-        private readonly IGenericService<Employee> _employeeService;
+        private readonly IGenericService<Payment> _PaymentService;
         private readonly IMapper _mapper;
 
-        public EmployeeController(IGenericService<Employee> employeeService, IMapper mapper)
+        public PaymentController(IGenericService<Payment> PaymentService, IMapper mapper)
         {
-            _employeeService = employeeService;
+            _PaymentService = PaymentService;
             _mapper = mapper;
         }
 
@@ -27,17 +27,17 @@ namespace EliteDining.APIs.Controllers
         {
             try
             {
-                var employees = await _employeeService.GetAllAsync();
-                if (employees != null)
+                var Payments = await _PaymentService.GetAllAsync();
+                if (Payments != null)
                 {
-                    return TypedResults.Ok(new ResponseDataModel<IEnumerable<EmployeeViewModel>>
+                    return TypedResults.Ok(new ResponseDataModel<IEnumerable<PaymentViewModel>>
                     {
                         Success = true,
-                        Data = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(employees)
+                        Data = _mapper.Map<IEnumerable<Payment>, IEnumerable<PaymentViewModel>>(Payments)
 
                     });
                 }
-                return TypedResults.BadRequest(new ResponseDataModel<EmployeeViewModel>
+                return TypedResults.BadRequest(new ResponseDataModel<PaymentViewModel>
                 {
                     Success = false,
                     Message = "There is no result"
@@ -45,7 +45,7 @@ namespace EliteDining.APIs.Controllers
             }
             catch (Exception ex)
             {
-                return TypedResults.BadRequest(new ResponseDataModel<EmployeeViewModel>
+                return TypedResults.BadRequest(new ResponseDataModel<PaymentViewModel>
                 {
                     Success = false,
                     Message = ex.Message,
@@ -54,21 +54,21 @@ namespace EliteDining.APIs.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IResult> GetEmployee(int id)
+        public async Task<IResult> GetPayment(int id)
         {
             try
             {
-                var employee = await _employeeService.GetByIdAsync(id);
-                if (employee != null)
+                var Payment = await _PaymentService.GetByIdAsync(id);
+                if (Payment != null)
                 {
-                    return TypedResults.Ok(new ResponseDataModel<EmployeeViewModel>
+                    return TypedResults.Ok(new ResponseDataModel<PaymentViewModel>
                     {
                         Success = true,
-                        Data = _mapper.Map<Employee, EmployeeViewModel>(employee)
+                        Data = _mapper.Map<Payment, PaymentViewModel>(Payment)
 
                     });
                 }
-                return TypedResults.BadRequest(new ResponseDataModel<EmployeeViewModel>
+                return TypedResults.BadRequest(new ResponseDataModel<PaymentViewModel>
                 {
                     Success = false,
                     Message = "There is no result"
@@ -76,7 +76,7 @@ namespace EliteDining.APIs.Controllers
             }
             catch (Exception ex)
             {
-                return TypedResults.BadRequest(new ResponseDataModel<EmployeeViewModel>
+                return TypedResults.BadRequest(new ResponseDataModel<PaymentViewModel>
                 {
                     Success = false,
                     Message = ex.Message,
@@ -85,12 +85,12 @@ namespace EliteDining.APIs.Controllers
         }
 
         [HttpPost]
-        public async Task<IResult> Create(EmployeeViewModel employeeViewModel)
+        public async Task<IResult> Create(PaymentViewModel paymentViewModel)
         {
-            var employee = _mapper.Map<EmployeeViewModel, Employee>(employeeViewModel);
+            var Payment = _mapper.Map<PaymentViewModel, Payment>(paymentViewModel);
             try
             {
-                var isSaved = await _employeeService.AddAsync(employee);
+                var isSaved = await _PaymentService.AddAsync(Payment);
                 if (isSaved == 1)
                 {
                     return TypedResults.Ok(new ResponseModel
@@ -116,18 +116,18 @@ namespace EliteDining.APIs.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IResult> Update(int id, EmployeeViewModel employeeViewModel)
+        public async Task<IResult> Update(int id, PaymentViewModel paymentViewModel)
         {
-            var employee = _mapper.Map<EmployeeViewModel, Employee>(employeeViewModel);
+            var Payment = _mapper.Map<PaymentViewModel, Payment>(paymentViewModel);
 
 
-            if (id == employeeViewModel.EmployeeId)
+            if (id == paymentViewModel.PaymentNo)
             {
 
-                var existingEmployee = await _employeeService.GetByIdAsync(id);
-                if (existingEmployee != null)
+                var existingPayment = await _PaymentService.GetByIdAsync(id);
+                if (existingPayment != null)
                 {
-                    await _employeeService.UpdateAsync(employee);
+                    await _PaymentService.UpdateAsync(Payment);
                     return TypedResults.Ok(new ResponseModel
                     {
                         Success = true,
@@ -147,7 +147,7 @@ namespace EliteDining.APIs.Controllers
                 return TypedResults.BadRequest(new ResponseModel
                 {
                     Success = false,
-                    Message = "The employee ID in the URL does not match the employee ID in the body"
+                    Message = "The Payment ID in the URL does not match the Payment ID in the body"
                 });
             }
         }
@@ -157,16 +157,16 @@ namespace EliteDining.APIs.Controllers
         {
             try
             {
-                var employee = await _employeeService.GetByIdAsync(id);
-                if (employee != null)
+                var Payment = await _PaymentService.GetByIdAsync(id);
+                if (Payment != null)
                 {
-                    await _employeeService.DeleteAsync(id);
-                    return TypedResults.Ok(new ResponseDataModel<EmployeeViewModel>
+                    await _PaymentService.DeleteAsync(id);
+                    return TypedResults.Ok(new ResponseDataModel<PaymentViewModel>
                     {
                         Success = true,
                     });
                 }
-                return TypedResults.NotFound(new ResponseDataModel<EmployeeViewModel>
+                return TypedResults.NotFound(new ResponseDataModel<PaymentViewModel>
                 {
                     Success = false,
                     Message = "There is no result"
@@ -174,7 +174,7 @@ namespace EliteDining.APIs.Controllers
             }
             catch (Exception ex)
             {
-                return TypedResults.BadRequest(new ResponseDataModel<EmployeeViewModel>
+                return TypedResults.BadRequest(new ResponseDataModel<PaymentViewModel>
                 {
                     Success = false,
                     Message = ex.Message,
