@@ -19,7 +19,7 @@ public partial class Employee
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
-    public virtual Role Role { get; set; }
+    public virtual EmployeeRole Role { get; set; }
 
     public virtual ICollection<Table> Tables { get; set; } = new List<Table>();
 }

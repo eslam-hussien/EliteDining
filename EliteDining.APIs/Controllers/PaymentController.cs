@@ -3,12 +3,14 @@ using EliteDining.APIs.ViewModel;
 using EliteDining.BL.IServices;
 using EliteDining.DAL.Models;
 using EliteDining.DAL.Repo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EliteDining.APIs.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class PaymentController : ControllerBase
     {
 

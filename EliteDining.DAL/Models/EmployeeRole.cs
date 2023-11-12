@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace EliteDining.DAL.Models;
 
-public partial class Role
+public partial class EmployeeRole
 {
     public int RoleId { get; set; }
 

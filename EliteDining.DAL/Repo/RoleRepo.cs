@@ -5,33 +5,33 @@ using System.Linq.Expressions;
 
 namespace EliteDining.DAL.Repo
 {
-    public class RoleRepo : IGenericRepo<Role>
+    public class RoleRepo : IGenericRepo<EmployeeRole>
     {
         private readonly EliteDiningDbContext _context;
         public RoleRepo(EliteDiningDbContext context) =>
             _context = context;
 
-        public async Task<int> Add(Role entity)
+        public async Task<int> Add(EmployeeRole entity)
         {
-            _context.Roles.Add(entity);
+            _context.EmployeeRoles.Add(entity);
             return await _context.SaveChangesAsync();
         }
 
         public async Task<int> Delete(int id)
         {
             var deletedOne = await GetOne(x => x.RoleId == id);
-            _context.Roles.Remove(deletedOne);
+            _context.EmployeeRoles.Remove(deletedOne);
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Role>> GetAll() =>
-              await _context.Roles.ToListAsync();
+        public async Task<IEnumerable<EmployeeRole>> GetAll() =>
+              await _context.EmployeeRoles.ToListAsync();
 
-        public  async Task<Role> GetOne(Expression<Func<Role, bool>> filter) =>        
-            await _context.Roles.FirstOrDefaultAsync(filter);
+        public  async Task<EmployeeRole> GetOne(Expression<Func<EmployeeRole, bool>> filter) =>        
+            await _context.EmployeeRoles.FirstOrDefaultAsync(filter);
 
 
-        public async Task<int> Update(Role role)
+        public async Task<int> Update(EmployeeRole role)
         {
             role.RoleName = role.RoleName;
             role.IsChef = role.IsChef;
