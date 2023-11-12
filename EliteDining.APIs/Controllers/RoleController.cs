@@ -3,20 +3,22 @@ using EliteDining.APIs.ViewModel;
 using EliteDining.BL.IServices;
 using EliteDining.DAL.Models;
 using EliteDining.DAL.Repo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EliteDining.APIs.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class RoleController : ControllerBase
     {
 
 
-        private readonly IGenericService<Role> _RoleService;
+        private readonly IGenericService<EmployeeRole> _RoleService;
         private readonly IMapper _mapper;
 
-        public RoleController(IGenericService<Role> RoleService, IMapper mapper)
+        public RoleController(IGenericService<EmployeeRole> RoleService, IMapper mapper)
         {
             _RoleService = RoleService;
             _mapper = mapper;
@@ -33,7 +35,7 @@ namespace EliteDining.APIs.Controllers
                     return TypedResults.Ok(new ResponseDataModel<IEnumerable<RoleViewModel>>
                     {
                         Success = true,
-                        Data = _mapper.Map<IEnumerable<Role>, IEnumerable<RoleViewModel>>(Roles)
+                        Data = _mapper.Map<IEnumerable<EmployeeRole>, IEnumerable<RoleViewModel>>(Roles)
 
                     });
                 }
@@ -64,7 +66,7 @@ namespace EliteDining.APIs.Controllers
                     return TypedResults.Ok(new ResponseDataModel<RoleViewModel>
                     {
                         Success = true,
-                        Data = _mapper.Map<Role, RoleViewModel>(Role)
+                        Data = _mapper.Map<EmployeeRole, RoleViewModel>(Role)
 
                     });
                 }
@@ -87,7 +89,7 @@ namespace EliteDining.APIs.Controllers
         [HttpPost]
         public async Task<IResult> Create(RoleViewModel roleViewModel)
         {
-            var Role = _mapper.Map<RoleViewModel, Role>(roleViewModel);
+            var Role = _mapper.Map<RoleViewModel, EmployeeRole>(roleViewModel);
             try
             {
                 var isSaved = await _RoleService.AddAsync(Role);
@@ -118,7 +120,7 @@ namespace EliteDining.APIs.Controllers
         [HttpPut("{id}")]
         public async Task<IResult> Update(int id, RoleViewModel roleViewModel)
         {
-            var Role = _mapper.Map<RoleViewModel, Role>(roleViewModel);
+            var Role = _mapper.Map<RoleViewModel, EmployeeRole>(roleViewModel);
 
 
             if (id == roleViewModel.RoleId)

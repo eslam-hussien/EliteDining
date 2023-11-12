@@ -3,6 +3,13 @@ using EliteDining.APIs.ViewModel;
 using EliteDining.DAL.Extensions;
 using EliteDining.DAL.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using EliteDining.BL.IServices;
+using EliteDining.BL.Services;
+using System.Security.Claims;
 
 namespace EliteDining.APIs
 {
@@ -17,6 +24,40 @@ namespace EliteDining.APIs
             string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<EliteDiningDbContext>(options =>
                 options.UseSqlServer(connectionString));
+            builder.Services.AddTransient<IAuthService, AuthService>();
+            // For Identity  
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                            .AddEntityFrameworkStores<EliteDiningDbContext>()
+                            .AddDefaultTokenProviders();
+            // Adding Authentication  
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+
+                        // Adding Jwt Bearer  
+                        .AddJwtBearer(options =>
+                        {
+                            options.SaveToken = true;
+                            options.RequireHttpsMetadata = false;
+                            options.TokenValidationParameters = new TokenValidationParameters()
+                            {
+                                ValidateIssuer = true,
+                                ValidateAudience = true,
+                                ValidAudience = builder.Configuration["JWT:ValidAudience"],
+                                ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+                                ClockSkew = TimeSpan.Zero,
+                                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+                            };
+                        });
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ManagerPolicy",
+                    p => p.RequireClaim(ClaimTypes.Role, "Manager", "CEO"));
+            });
+
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -37,10 +78,8 @@ namespace EliteDining.APIs
             }
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
-
-
             app.MapControllers();
 
             app.Run();
@@ -57,7 +96,7 @@ namespace EliteDining.APIs
             CreateMap<Food, FoodViewModel>().ReverseMap();
             CreateMap<Order, OrderViewModel>().ReverseMap();
             CreateMap<Payment, PaymentViewModel>().ReverseMap();
-            CreateMap<Role, RoleViewModel>().ReverseMap();
+            CreateMap<EmployeeRole, RoleViewModel>().ReverseMap();
             CreateMap<Table, TableViewModel>().ReverseMap();
         }
     }
