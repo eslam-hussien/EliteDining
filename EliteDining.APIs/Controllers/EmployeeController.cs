@@ -3,10 +3,12 @@ using EliteDining.APIs.ViewModel;
 using EliteDining.BL.IServices;
 using EliteDining.DAL.Models;
 using EliteDining.DAL.Repo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EliteDining.APIs.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class EmployeeController : ControllerBase

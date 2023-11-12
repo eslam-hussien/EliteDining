@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
 namespace EliteDining.DAL.Models;
 
-public partial class EliteDiningDbContext : DbContext
+public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
 {
     public EliteDiningDbContext()
     {
@@ -14,6 +13,7 @@ public partial class EliteDiningDbContext : DbContext
         : base(options)
     {
     }
+   
 
     public virtual DbSet<Bill> Bills { get; set; }
 
@@ -27,7 +27,7 @@ public partial class EliteDiningDbContext : DbContext
 
     public virtual DbSet<Payment> Payments { get; set; }
 
-    public virtual DbSet<Role> Roles { get; set; }
+    public virtual DbSet<EmployeeRole> EmployeeRoles { get; set; }
 
     public virtual DbSet<Table> Tables { get; set; }
 
@@ -37,6 +37,8 @@ public partial class EliteDiningDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Bill>(entity =>
         {
             entity.HasKey(e => e.BillNo).HasName("BILL_PK");
@@ -164,11 +166,11 @@ public partial class EliteDiningDbContext : DbContext
                 .HasConstraintName("FK_PAYMENT_t_CUSTOMER_t");
         });
 
-        modelBuilder.Entity<Role>(entity =>
+        modelBuilder.Entity<EmployeeRole>(entity =>
         {
             entity.HasKey(e => e.RoleId).HasName("PK_ROLE_t");
 
-            entity.ToTable("ROLE");
+            entity.ToTable("EmployeeRole");
 
             entity.Property(e => e.RoleId).HasColumnName("RoleID");
             entity.Property(e => e.IsChef).HasColumnName("isChef");
