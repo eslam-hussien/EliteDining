@@ -10,6 +10,7 @@ using System.Text;
 using EliteDining.BL.IServices;
 using EliteDining.BL.Services;
 using System.Security.Claims;
+using EliteDining.APIs.ViewModels;
 
 namespace EliteDining.APIs
 {
@@ -52,14 +53,11 @@ namespace EliteDining.APIs
                                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
                             };
                         });
-            builder.Services.AddAuthorization(options =>
-            {
-                options.AddPolicy("ManagerPolicy",
-                    p => p.RequireClaim(ClaimTypes.Role, "Manager", "CEO"));
-            });
+
 
 
             builder.Services.AddControllers();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -98,6 +96,7 @@ namespace EliteDining.APIs
             CreateMap<Payment, PaymentViewModel>().ReverseMap();
             CreateMap<EmployeeRole, RoleViewModel>().ReverseMap();
             CreateMap<Table, TableViewModel>().ReverseMap();
+            CreateMap<Booking, BookingViewModel>().ReverseMap();
         }
     }
 }

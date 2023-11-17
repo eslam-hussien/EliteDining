@@ -37,6 +37,9 @@ namespace EliteDining.DAL.Extensions
             services.AddScoped<IGenericRepo<Payment>, PaymentRepo>();
             services.AddScoped<IGenericRepo<EmployeeRole>, RoleRepo>();
             services.AddScoped<IGenericRepo<Table>, TableRepo>();
+            services.AddScoped<IGenericRepo<Booking>, BookingRepo>();
+            services.AddScoped<TableRepo>();
+
         }
         private static void AddServices(this IServiceCollection services)
         {
@@ -48,6 +51,8 @@ namespace EliteDining.DAL.Extensions
             services.AddScoped<IGenericService<Payment>, PaymentService>();
             services.AddScoped<IGenericService<EmployeeRole>, RoleService>();
             services.AddScoped<IGenericService<Table>, TableService>();
+            services.AddScoped<IBookingService,BookingService>();
+
         }
     }
 }
