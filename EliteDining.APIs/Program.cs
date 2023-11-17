@@ -10,6 +10,7 @@ using System.Text;
 using EliteDining.BL.IServices;
 using EliteDining.BL.Services;
 using System.Security.Claims;
+using EliteDining.APIs.ViewModels;
 
 namespace EliteDining.APIs
 {
@@ -17,6 +18,7 @@ namespace EliteDining.APIs
     {
         public static void Main(string[] args)
         {
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -52,23 +54,41 @@ namespace EliteDining.APIs
                                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
                             };
                         });
-            builder.Services.AddAuthorization(options =>
-            {
-                options.AddPolicy("ManagerPolicy",
-                    p => p.RequireClaim(ClaimTypes.Role, "Manager", "CEO"));
-            });
+
 
 
             builder.Services.AddControllers();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddPersistenceLayer(builder.Configuration);
             builder.Services.AddAutoMapper(typeof(Program));
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    builder => builder.AllowAnyOrigin()
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod());
+            });
+
 
 
             var app = builder.Build();
+           
+                // Other configurations...
+
+                // Add CORS
+               
+          
+                // Other configurations...
+
+                // Use CORS
+                app.UseCors("AllowAll");
+
+                // Other configurations...
+            
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -98,6 +118,7 @@ namespace EliteDining.APIs
             CreateMap<Payment, PaymentViewModel>().ReverseMap();
             CreateMap<EmployeeRole, RoleViewModel>().ReverseMap();
             CreateMap<Table, TableViewModel>().ReverseMap();
+            CreateMap<Booking, BookingViewModel>().ReverseMap();
         }
     }
 }

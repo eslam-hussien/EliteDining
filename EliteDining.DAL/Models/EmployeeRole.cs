@@ -7,7 +7,7 @@ public partial class EmployeeRole
 {
     public int RoleId { get; set; }
 
-    public string RoleName { get; set; }
+    public string RoleName { get; set; } = null!;
 
     public bool? IsAdmin { get; set; }
 

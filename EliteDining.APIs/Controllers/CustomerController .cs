@@ -25,6 +25,7 @@ namespace EliteDining.APIs.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IResult> GetAll()
         {
             try

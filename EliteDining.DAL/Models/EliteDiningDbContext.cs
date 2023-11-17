@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+
 namespace EliteDining.DAL.Models;
 
 public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
@@ -13,13 +15,16 @@ public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
         : base(options)
     {
     }
-   
 
     public virtual DbSet<Bill> Bills { get; set; }
+
+    public virtual DbSet<Booking> Bookings { get; set; }
 
     public virtual DbSet<Customer> Customers { get; set; }
 
     public virtual DbSet<Employee> Employees { get; set; }
+
+    public virtual DbSet<EmployeeRole> EmployeeRoles { get; set; }
 
     public virtual DbSet<Food> Foods { get; set; }
 
@@ -27,23 +32,23 @@ public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
 
     public virtual DbSet<Payment> Payments { get; set; }
 
-    public virtual DbSet<EmployeeRole> EmployeeRoles { get; set; }
-
     public virtual DbSet<Table> Tables { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=DESKTOP-3FTMPVV\\SQL0;Database=EliteDiningDB;Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
+
         modelBuilder.Entity<Bill>(entity =>
         {
             entity.HasKey(e => e.BillNo).HasName("BILL_PK");
 
             entity.ToTable("BILL");
+
+            entity.HasIndex(e => e.CustId, "IX_BILL_CustID");
 
             entity.Property(e => e.BillNo).ValueGeneratedNever();
             entity.Property(e => e.CustId).HasColumnName("CustID");
@@ -54,27 +59,42 @@ public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
                 .HasConstraintName("BILL_FK");
         });
 
+        modelBuilder.Entity<Booking>(entity =>
+        {
+            entity.ToTable("Booking");
+
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            entity.Property(e => e.CustId).HasColumnName("CustID");
+            entity.Property(e => e.FromDate).HasColumnType("datetime");
+            entity.Property(e => e.ToDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Cust).WithMany(p => p.Bookings)
+                .HasForeignKey(d => d.CustId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Booking_CUSTOMER");
+
+            entity.HasOne(d => d.TableNoNavigation).WithMany(p => p.Bookings)
+                .HasForeignKey(d => d.TableNo)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Booking_TABLE");
+        });
+
         modelBuilder.Entity<Customer>(entity =>
         {
             entity.HasKey(e => e.CustId).HasName("CUSTOMER_PK");
 
             entity.ToTable("CUSTOMER");
 
-            entity.Property(e => e.CustId)
-                .ValueGeneratedNever()
-                .HasColumnName("CustID");
+
+            entity.Property(e => e.CustId).HasColumnName("CustID");
             entity.Property(e => e.CName)
-                .HasMaxLength(20)
-                .IsUnicode(false)
+                .HasMaxLength(50)
                 .HasColumnName("C_Name");
+            entity.Property(e => e.Mail).HasMaxLength(50);
             entity.Property(e => e.Phone)
-                .HasMaxLength(10)
+                .HasMaxLength(20)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.TableNoNavigation).WithMany(p => p.Customers)
-                .HasForeignKey(d => d.TableNo)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("CUSTOMER_FK");
         });
 
         modelBuilder.Entity<Employee>(entity =>
@@ -83,6 +103,8 @@ public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
 
             entity.ToTable("EMPLOYEE");
 
+            entity.HasIndex(e => e.RoleId, "IX_EMPLOYEE_RoleID");
+
             entity.Property(e => e.EmployeeId)
                 .ValueGeneratedNever()
                 .HasColumnName("EmployeeID");
@@ -90,7 +112,6 @@ public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
                 .HasColumnType("date")
                 .HasColumnName("Date_hired");
             entity.Property(e => e.EName)
-                .IsRequired()
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("E_Name");
@@ -102,11 +123,24 @@ public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
                 .HasConstraintName("FK_EMPLOYEE_t_ROLE_t");
         });
 
+        modelBuilder.Entity<EmployeeRole>(entity =>
+        {
+            entity.HasKey(e => e.RoleId).HasName("PK_ROLE_t");
+
+            entity.ToTable("EmployeeROLE");
+
+            entity.Property(e => e.RoleId).HasColumnName("RoleID");
+            entity.Property(e => e.IsChef).HasColumnName("isChef");
+            entity.Property(e => e.RoleName).HasMaxLength(50);
+        });
+
         modelBuilder.Entity<Food>(entity =>
         {
             entity.HasKey(e => e.FoodId).HasName("FOOD_PK");
 
             entity.ToTable("FOOD");
+
+            entity.HasIndex(e => e.EmployeeId, "IX_FOOD_EmployeeID");
 
             entity.Property(e => e.FoodId)
                 .ValueGeneratedNever()
@@ -125,6 +159,12 @@ public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<Order>(entity =>
         {
             entity.ToTable("ORDER");
+
+            entity.HasIndex(e => e.CustId, "IX_ORDER_CustID");
+
+            entity.HasIndex(e => e.EmployeeId, "IX_ORDER_EmployeeID");
+
+            entity.HasIndex(e => e.FoodId, "IX_ORDER_FoodID");
 
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.CustId).HasColumnName("CustID");
@@ -154,6 +194,8 @@ public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
 
             entity.ToTable("PAYMENT");
 
+            entity.HasIndex(e => e.CustId, "IX_PAYMENT_CustID");
+
             entity.Property(e => e.PaymentNo).ValueGeneratedNever();
             entity.Property(e => e.CustId).HasColumnName("CustID");
             entity.Property(e => e.Type)
@@ -166,24 +208,13 @@ public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
                 .HasConstraintName("FK_PAYMENT_t_CUSTOMER_t");
         });
 
-        modelBuilder.Entity<EmployeeRole>(entity =>
-        {
-            entity.HasKey(e => e.RoleId).HasName("PK_ROLE_t");
-
-            entity.ToTable("EmployeeRole");
-
-            entity.Property(e => e.RoleId).HasColumnName("RoleID");
-            entity.Property(e => e.IsChef).HasColumnName("isChef");
-            entity.Property(e => e.RoleName)
-                .IsRequired()
-                .HasMaxLength(50);
-        });
-
         modelBuilder.Entity<Table>(entity =>
         {
             entity.HasKey(e => e.TableNo).HasName("TABLE_PK");
 
             entity.ToTable("TABLE");
+
+            entity.HasIndex(e => e.EmployeeId, "IX_TABLE_EmployeeID");
 
             entity.Property(e => e.TableNo).ValueGeneratedNever();
             entity.Property(e => e.AvailableSeats).HasColumnName("Available_seats");

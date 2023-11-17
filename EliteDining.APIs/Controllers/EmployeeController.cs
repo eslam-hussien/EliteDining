@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EliteDining.APIs.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/[controller]")]
     public class EmployeeController : ControllerBase
