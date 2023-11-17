@@ -18,6 +18,7 @@ namespace EliteDining.APIs
     {
         public static void Main(string[] args)
         {
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -64,9 +65,30 @@ namespace EliteDining.APIs
 
             builder.Services.AddPersistenceLayer(builder.Configuration);
             builder.Services.AddAutoMapper(typeof(Program));
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    builder => builder.AllowAnyOrigin()
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod());
+            });
+
 
 
             var app = builder.Build();
+           
+                // Other configurations...
+
+                // Add CORS
+               
+          
+                // Other configurations...
+
+                // Use CORS
+                app.UseCors("AllowAll");
+
+                // Other configurations...
+            
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

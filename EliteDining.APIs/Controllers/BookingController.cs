@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EliteDining.APIs.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class BookingController : ControllerBase

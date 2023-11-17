@@ -29,7 +29,7 @@ namespace EliteDining.APIs.Controllers
                 var (status, message) = await _authService.Login(model);
                 if (status == 0)
                     return BadRequest(message);
-                return Ok(message);
+                return Ok(new { access= message }) ;
             }
             catch (Exception ex)
             {
