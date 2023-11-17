@@ -11,7 +11,7 @@ public partial class Table
 
     public int EmployeeId { get; set; }
 
-    public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
+    public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
-    public virtual Employee Employee { get; set; }
+    public virtual Employee Employee { get; set; } = null!;
 }

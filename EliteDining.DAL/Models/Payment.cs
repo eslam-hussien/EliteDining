@@ -13,5 +13,5 @@ public partial class Payment
 
     public int CustId { get; set; }
 
-    public virtual Customer? Cust { get; set; }
+    public virtual Customer Cust { get; set; } = null!;
 }

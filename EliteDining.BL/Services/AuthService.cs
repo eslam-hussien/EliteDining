@@ -1,11 +1,16 @@
 ﻿using EliteDining.BL.IServices;
 using EliteDining.DAL.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace EliteDining.BL.Services
 {
@@ -14,12 +19,14 @@ namespace EliteDining.BL.Services
         private readonly UserManager<ApplicationUser> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly IConfiguration _configuration;
-        public AuthService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+        private readonly EliteDiningDbContext _eliteDiningDbContext;
+
+        public AuthService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration,EliteDiningDbContext eliteDiningDbContext)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
             _configuration = configuration;
-
+            _eliteDiningDbContext = eliteDiningDbContext;
         }
         public async Task<(int, string)> Registeration(RegistrationModel model, string role)
         {
@@ -32,7 +39,13 @@ namespace EliteDining.BL.Services
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.Username,
-                Name = model.Name
+                PhoneNumber = model.Phone
+            };
+            var customer = new Customer
+            {
+                CName = model.Username,
+                Phone = model.Phone,
+                Mail = model.Email,
             };
             var createUserResult = await userManager.CreateAsync(user, model.Password);
             if (!createUserResult.Succeeded)
@@ -41,9 +54,11 @@ namespace EliteDining.BL.Services
             if (!await roleManager.RoleExistsAsync(role))
                 await roleManager.CreateAsync(new IdentityRole(role));
 
-            if (await roleManager.RoleExistsAsync(UserRoles.User))
-                await userManager.AddToRoleAsync(user, role);
+            await userManager.AddToRoleAsync(user, role);
+            
 
+             _eliteDiningDbContext.Customers.Add(customer);
+            await _eliteDiningDbContext.SaveChangesAsync();
             return (1, "User created successfully!");
         }
 

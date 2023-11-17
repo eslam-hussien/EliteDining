@@ -82,6 +82,7 @@ namespace EliteDining.APIs.Controllers
                 {
                     Success = false,
                     Message = ex.Message,
+                    
                 });
             }
         }
