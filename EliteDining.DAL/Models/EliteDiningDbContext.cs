@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,8 @@ public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
 
     public virtual DbSet<Booking> Bookings { get; set; }
 
+    public virtual DbSet<Contact> Contacts { get; set; }
+
     public virtual DbSet<Customer> Customers { get; set; }
 
     public virtual DbSet<Employee> Employees { get; set; }
@@ -35,7 +38,7 @@ public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
     public virtual DbSet<Table> Tables { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-3FTMPVV\\SQL0;Database=EliteDiningDB;Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
+        => optionsBuilder.UseSqlServer("Server=LAPTOP-GQEI9KJR\\SQLEXPRESS;Database=EliteDiningDB;Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -94,6 +97,13 @@ public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(e => e.Phone)
                 .HasMaxLength(20)
                 .IsUnicode(false);
+
+        });
+        modelBuilder.Entity<Contact>(entity =>
+        {
+            
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd(); ;
 
         });
 

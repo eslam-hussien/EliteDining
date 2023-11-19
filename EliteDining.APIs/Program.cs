@@ -119,6 +119,7 @@ namespace EliteDining.APIs
             CreateMap<EmployeeRole, RoleViewModel>().ReverseMap();
             CreateMap<Table, TableViewModel>().ReverseMap();
             CreateMap<Booking, BookingViewModel>().ReverseMap();
+            CreateMap<Contact, ContactViewModel>().ReverseMap();
         }
     }
 }
