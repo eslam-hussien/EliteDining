@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
 using EliteDining.APIs.ViewModel;
-using EliteDining.APIs.ViewModels;
 using EliteDining.BL.IServices;
-using EliteDining.BL.Services;
 using EliteDining.DAL.Models;
 using EliteDining.DAL.Repo;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EliteDining.APIs.Controllers
@@ -26,7 +23,7 @@ namespace EliteDining.APIs.Controllers
         }
 
         [HttpGet]
-        
+
         public async Task<IResult> GetAll()
         {
             try
@@ -125,31 +122,31 @@ namespace EliteDining.APIs.Controllers
             var contact = _mapper.Map<ContactViewModel, Contact>(ContactViewModel);
 
 
-            
-            
 
-                var existingContact = await _ContactService.GetByIdAsync(id);
-                if (existingContact != null)
-                {
+
+
+            var existingContact = await _ContactService.GetByIdAsync(id);
+            if (existingContact != null)
+            {
                 contact.Id = id;
-                    await _ContactService.UpdateAsync(contact);
-                    return TypedResults.Ok(new ResponseModel
-                    {
-                        Success = true,
-                    });
-                }
-                else
+                await _ContactService.UpdateAsync(contact);
+                return TypedResults.Ok(new ResponseModel
                 {
-                    return TypedResults.NotFound(new ResponseModel
-                    {
-                        Success = false,
-                        Message = "There is no result"
-                    });
-                }
-            
-            
-                
-            
+                    Success = true,
+                });
+            }
+            else
+            {
+                return TypedResults.NotFound(new ResponseModel
+                {
+                    Success = false,
+                    Message = "There is no result"
+                });
+            }
+
+
+
+
         }
 
         [HttpDelete("{id}")]

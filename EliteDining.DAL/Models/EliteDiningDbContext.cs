@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace EliteDining.DAL.Models;
@@ -33,12 +30,15 @@ public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
 
     public virtual DbSet<Order> Orders { get; set; }
 
+    public virtual DbSet<OrderDetail> OrderDetails { get; set; }
+
     public virtual DbSet<Payment> Payments { get; set; }
 
     public virtual DbSet<Table> Tables { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Server=LAPTOP-GQEI9KJR\\SQLEXPRESS;Database=EliteDiningDB;Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=DESKTOP-3FTMPVV\\SQL0;Database=EliteDiningDB;Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -66,7 +66,6 @@ public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
         {
             entity.ToTable("Booking");
 
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.CustId).HasColumnName("CustID");
             entity.Property(e => e.FromDate).HasColumnType("datetime");
             entity.Property(e => e.ToDate).HasColumnType("datetime");
@@ -82,12 +81,16 @@ public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
                 .HasConstraintName("FK_Booking_TABLE");
         });
 
+        modelBuilder.Entity<Contact>(entity =>
+        {
+            entity.Property(e => e.Message).HasColumnName("message");
+        });
+
         modelBuilder.Entity<Customer>(entity =>
         {
             entity.HasKey(e => e.CustId).HasName("CUSTOMER_PK");
 
             entity.ToTable("CUSTOMER");
-
 
             entity.Property(e => e.CustId).HasColumnName("CustID");
             entity.Property(e => e.CName)
@@ -97,14 +100,6 @@ public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(e => e.Phone)
                 .HasMaxLength(20)
                 .IsUnicode(false);
-
-        });
-        modelBuilder.Entity<Contact>(entity =>
-        {
-            
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id).ValueGeneratedOnAdd(); ;
-
         });
 
         modelBuilder.Entity<Employee>(entity =>
@@ -174,12 +169,9 @@ public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
 
             entity.HasIndex(e => e.EmployeeId, "IX_ORDER_EmployeeID");
 
-            entity.HasIndex(e => e.FoodId, "IX_ORDER_FoodID");
-
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.CustId).HasColumnName("CustID");
             entity.Property(e => e.EmployeeId).HasColumnName("EmployeeID");
-            entity.Property(e => e.FoodId).HasColumnName("FoodID");
             entity.Property(e => e.OrderTime).HasColumnName("Order_time");
 
             entity.HasOne(d => d.Cust).WithMany(p => p.Orders)
@@ -189,13 +181,25 @@ public partial class EliteDiningDbContext : IdentityDbContext<ApplicationUser>
 
             entity.HasOne(d => d.Employee).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.EmployeeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ORDER_t_EMPLOYEE_t");
+        });
 
-            entity.HasOne(d => d.Food).WithMany(p => p.Orders)
-                .HasForeignKey(d => d.FoodId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("ORDER_FK3");
+        modelBuilder.Entity<OrderDetail>(entity =>
+        {
+            entity.HasKey(e => e.DetailId);
+
+            entity.ToTable("ORDER_DETAILS");
+
+            entity.Property(e => e.FkFoodId).HasColumnName("FK_FoodID");
+            entity.Property(e => e.FkOrderId).HasColumnName("FK_OrderID");
+
+            entity.HasOne(d => d.FkFood).WithMany(p => p.OrderDetails)
+                .HasForeignKey(d => d.FkFoodId)
+                .HasConstraintName("FK_ORDER_DETAILS_FOOD");
+
+            entity.HasOne(d => d.FkOrder).WithMany(p => p.OrderDetails)
+                .HasForeignKey(d => d.FkOrderId)
+                .HasConstraintName("FK_ORDER_DETAILS_ORDER");
         });
 
         modelBuilder.Entity<Payment>(entity =>

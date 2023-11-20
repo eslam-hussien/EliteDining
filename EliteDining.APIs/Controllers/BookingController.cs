@@ -1,5 +1,4 @@
-﻿using EliteDining.APIs.ViewModel;
-using EliteDining.APIs.ViewModels;
+﻿using EliteDining.APIs.ViewModels;
 using EliteDining.BL.IServices;
 using EliteDining.DAL.Repo;
 using Microsoft.AspNetCore.Authorization;
@@ -34,8 +33,8 @@ namespace EliteDining.APIs.Controllers
                     return TypedResults.Ok(new ResponseModel
                     {
                         Success = true,
-                        Message="Booking Done",
-                        StatusCode=1
+                        Message = "Booking Done",
+                        StatusCode = 1
 
                     });
                 }
@@ -45,8 +44,8 @@ namespace EliteDining.APIs.Controllers
                     return TypedResults.Ok(new ResponseModel
                     {
                         Success = false,
-                        Message="Customer isnot Found",
-                        StatusCode=-1
+                        Message = "Customer isnot Found",
+                        StatusCode = -1
                     });
                 }
                 if (isSaved == -2)
@@ -78,7 +77,7 @@ namespace EliteDining.APIs.Controllers
                 {
                     Success = false,
                     Message = ex.Message,
-                    
+
 
                 });
             }

@@ -1,32 +1,62 @@
 ﻿using EliteDining.BL.IServices;
 using EliteDining.DAL.IRepo;
 using EliteDining.DAL.Models;
+using EliteDining.APIs.ViewModel;
 
 namespace EliteDining.BL.Services
 {
-    public class OrderService : IGenericService<Order>
+    public class OrderService : IOrderService
     {
         private readonly IGenericRepo<Order> _OrderRepo;
-        public OrderService(IGenericRepo<Order> OrderRepo) =>
+        private readonly IGenericRepo<OrderDetail> detailRepo;
+
+        public OrderService(IGenericRepo<Order> OrderRepo, IGenericRepo<OrderDetail> detailRepo)
+        {
             _OrderRepo = OrderRepo;
+            this.detailRepo = detailRepo;
+        }
+
+        public async Task<int> AddOrder(OrderViewModel entity)
+        {
+            try
+            {
+                var order = new Order
+                {
+                    OrderTime = DateTime.Now,
+                    CustId = entity.CustomerId,
+
+                };
+
+               await _OrderRepo.Add(order);
+
+                foreach (var item in entity.OrderList)
+                {
+                    var orderDetails = new OrderDetail
+                    {
+                        Quantity = item.Quantity,
 
 
-        public Task<int> AddAsync(Order entity) =>
-             _OrderRepo.Add(entity);
-
-        public Task<int> DeleteAsync(int id) =>
-             _OrderRepo.Delete(id);
+                        FkOrderId = order.OrderId,
 
 
-        public Task<IEnumerable<Order>> GetAllAsync() =>
-             _OrderRepo.GetAll();
+                        FkFoodId =item.FoodId,
+                    };
+                   await detailRepo.Add(orderDetails);
+
+                }
 
 
-        public Task<Order> GetByIdAsync(int id) =>
-             _OrderRepo.GetOne(x => x.OrderId == id);
+                return 1;
 
 
-        public Task<int> UpdateAsync(Order entity) =>
-            _OrderRepo.Update(entity);
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+
+        }
     }
+
+
 }

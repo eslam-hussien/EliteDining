@@ -7,17 +7,15 @@ public partial class Order
 {
     public int OrderId { get; set; }
 
-    public TimeSpan? OrderTime { get; set; }
+    public DateTime? OrderTime { get; set; }
 
     public int CustId { get; set; }
 
-    public int EmployeeId { get; set; }
-
-    public int FoodId { get; set; }
+    public int? EmployeeId { get; set; }
 
     public virtual Customer Cust { get; set; } = null!;
 
-    public virtual Employee Employee { get; set; } = null!;
+    public virtual Employee? Employee { get; set; }
 
-    public virtual Food Food { get; set; } = null!;
+    public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 }
